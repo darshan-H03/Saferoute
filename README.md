@@ -31,7 +31,7 @@ It is **not** a replacement for Google Maps, ride-hailing apps, or **112 India**
 - [x] **Phase 7** – Journey monitoring
 - [x] **Phase 8** – Rule-based anomaly detection
 - [x] **Phase 9** – Safety verification (“Are you safe?”)
-- [ ] Phase 10+ – SOS polish, trusted contact dashboard
+- [x] **Phase 10** – SOS polish, trusted contact dashboard
 
 ---
 
