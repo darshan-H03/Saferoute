@@ -3,67 +3,80 @@
 ![GitHub repo status](https://img.shields.io/badge/status-active%20project-success)
 ![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB)
 ![React](https://img.shields.io/badge/React-19-61DAFB)
-![License](https://img.shields.io/badge/license-Open%20Source-blue)
+![Flask](https://img.shields.io/badge/Flask-3.1-000000)
 
-AI-assisted **proactive personal journey safety** system.
+SafeRoute is a full-stack personal safety web app that helps users track journeys, monitor suspicious activity, verify safety, and alert trusted contacts when needed.
 
-SafeRoute monitors a journey for potentially unusual patterns, asks **"Are you safe?"** before escalating, and alerts trusted contacts only when needed. It is designed to support safer travel decisions, emergency checks, and trusted contact escalation without replacing official emergency services.
+The app combines a Flask REST API with a React frontend and is designed for a personal safety workflow using GPS, route monitoring, anomaly detection, and emergency escalation.
 
-It is **not** a replacement for Google Maps, ride-hailing apps, or **112 India**, and it does **not** claim to detect crimes or assaults.
+> This project is a safety aid, not a replacement for emergency services or official navigation apps.
 
 ---
 
-## Stack
+## Features
+
+- User registration and login
+- JWT-based authentication
+- Emergency contact management
+- Journey start, pause, resume, and end flow
+- GPS location tracking and monitoring
+- Route anomaly and safety checks
+- Live safety verification prompts
+- SOS-trigger workflow and trusted-contact alerts
+- Frontend dashboard and map views
+
+---
+
+## Tech stack
 
 | Layer | Technology |
-|-------|------------|
+|------|------------|
 | Frontend | React + Vite |
-| Backend | Python Flask REST API |
-| Database | SQLite (dev) |
-| Auth | JWT + hashed passwords |
-| Maps (later) | Leaflet + OpenStreetMap |
+| Backend | Python Flask |
+| Database | SQLite for local development |
+| Auth | Flask-JWT-Extended |
+| Maps | Leaflet + OpenStreetMap |
+| Data | JSON/DB-backed safety and hotspot logic |
 
 ---
 
-## Current progress
+## Project structure
 
-- [x] **Phase 1** – Project setup
-- [x] **Phase 2** – Database schema + authentication
-- [x] **Phase 3** – Emergency contact management
-- [x] **Phase 4** – GPS location tracking
-- [x] **Phase 5** – Safe Journey Mode
-- [x] **Phase 6** – Live map (Leaflet)
-- [x] **Phase 7** – Journey monitoring
-- [x] **Phase 8** – Rule-based anomaly detection
-- [x] **Phase 9** – Safety verification (“Are you safe?”)
-- [ ] Phase 10+ – SOS polish, trusted contact dashboard
-
----
-
-## Folder structure
-
-```
-saferoute/
-├── backend/          # Flask API
-├── frontend/         # React + Vite
-├── docs/             # Architecture notes (growing)
+```text
+majorprojet-main/
+├── backend/
+│   ├── app/
+│   ├── data/
+│   ├── tests/
+│   ├── .env.example
+│   ├── requirements.txt
+│   └── run.py
+├── frontend/
+│   ├── src/
+│   ├── public/
+│   ├── package.json
+│   └── vite.config.js
+├── docs/
 ├── .gitignore
-└── README.md
+├── README.md
+├── package.json
+└── package-lock.json
 ```
 
 ---
 
 ## Prerequisites
 
-- Python 3.11+ (tested with 3.13)
-- Node.js 18+ and npm
+- Python 3.11+
+- Node.js 18+
+- npm
 - Git
 
 ---
 
-## Setup
+## Backend setup
 
-### 1. Backend
+From the project root:
 
 ```bash
 cd backend
@@ -76,29 +89,96 @@ python -m venv .venv
 # source .venv/bin/activate
 
 pip install -r requirements.txt
-copy .env.example .env   # or: cp .env.example .env
+copy .env.example .env
 python run.py
 ```
 
-API runs at: `http://localhost:5000`  
-Health check: `http://localhost:5000/api/health`
+The API runs at:
 
-### 2. Frontend
+- http://localhost:5000
+- Health endpoint: http://localhost:5000/api/health
+
+---
+
+## Frontend setup
+
+From the project root:
 
 ```bash
 cd frontend
-copy .env.example .env   # or: cp .env.example .env
+copy .env.example .env
 npm install
-npm run dev
+npm run dev -- --host 0.0.0.0
 ```
 
-App runs at: `http://localhost:5173`
+Open the app at:
+
+- http://localhost:5173
+
+---
+
+## Environment variables
+
+### Backend
+
+Create `backend/.env` based on `backend/.env.example`.
+
+Key values:
+
+- `SECRET_KEY`
+- `JWT_SECRET_KEY`
+- `DATABASE_URL`
+- `CORS_ORIGINS`
+- `FRONTEND_URL`
+
+### Frontend
+
+Create `frontend/.env` based on `frontend/.env.example`.
+
+Example:
+
+```env
+VITE_API_BASE_URL=http://127.0.0.1:5000/api
+```
+
+---
+
+## Main API flow
+
+### Auth
+
+- `POST /api/auth/register`
+- `POST /api/auth/login`
+- `GET /api/auth/me`
+- `PUT /api/auth/me`
+
+### Contacts
+
+- `GET /api/contacts`
+- `POST /api/contacts`
+- `PUT /api/contacts/:id`
+- `DELETE /api/contacts/:id`
+
+### Journeys
+
+- `GET /api/journeys/active`
+- `POST /api/journeys`
+- `POST /api/journeys/:id/pause`
+- `POST /api/journeys/:id/resume`
+- `POST /api/journeys/:id/end`
+- `POST /api/journeys/:id/sos`
+- `POST /api/journeys/:id/locations`
+- `GET /api/journeys/:id/monitoring`
+
+### Safety checks
+
+- `POST /api/safety-checks/:id/respond`
+- `POST /api/safety-checks/:id/cancel-countdown`
+- `POST /api/safety-checks/:id/timeout`
 
 ---
 
 ## Git workflow
-
-Use a simple feature-based workflow to keep the repo clean:
 
 ```bash
 git checkout -b feature/my-change
@@ -107,7 +187,7 @@ git commit -m "Add my feature"
 git push origin feature/my-change
 ```
 
-Before merging to main:
+For main branch updates:
 
 ```bash
 git checkout main
@@ -116,117 +196,16 @@ git merge feature/my-change
 git push origin main
 ```
 
-For a clean reset after testing locally:
+---
 
-```bash
-git status
-git restore .
-```
+## Notes
 
-> Never commit secrets, service account keys, or local environment files. Keep those in `.env` only and let `.gitignore` handle the rest.
+- Do not commit environment files or Firebase credentials.
+- Keep production secrets out of the repository.
+- The SQLite database is created automatically at runtime in the backend instance folder for local development.
 
 ---
 
-## Environment variables
+## License
 
-### `backend/.env`
-
-| Variable | Purpose |
-|----------|---------|
-| `SECRET_KEY` | Flask secret |
-| `JWT_SECRET_KEY` | JWT signing key |
-| `DATABASE_URL` | Default `sqlite:///saferoute.db` |
-| `CORS_ORIGINS` | Frontend origin(s), e.g. `http://localhost:5173` |
-
-### `frontend/.env`
-
-| Variable | Purpose |
-|----------|---------|
-| `VITE_API_BASE_URL` | Flask API base, e.g. `http://localhost:5000/api` |
-
-**Never commit real secrets.** Use `.env.example` as a template.
-
----
-
-## Auth API (Phase 2)
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/auth/register` | Create account |
-| POST | `/api/auth/login` | Login → JWT |
-| GET | `/api/auth/me` | Current user (Bearer token) |
-| PUT | `/api/auth/me` | Update name / phone |
-
-Passwords are hashed with Werkzeug. JWT identity is the user id.
-
-### Contacts API (Phase 3)
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/contacts` | List contacts |
-| POST | `/api/contacts` | Add contact |
-| GET | `/api/contacts/:id` | Get one contact |
-| PUT | `/api/contacts/:id` | Edit contact |
-| PATCH | `/api/contacts/:id/primary` | Set primary |
-| DELETE | `/api/contacts/:id` | Delete contact |
-
-### Journeys / GPS API (Phase 4–5)
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/journeys/active` | Current journey |
-| POST | `/api/journeys` | Start Safe Journey |
-| POST | `/api/journeys/:id/pause` | Pause GPS uploads |
-| POST | `/api/journeys/:id/resume` | Resume journey |
-| POST | `/api/journeys/:id/end` | End journey |
-| POST | `/api/journeys/:id/cancel` | Cancel journey |
-| POST | `/api/journeys/:id/sos` | Manual SOS shell |
-| POST | `/api/journeys/:id/locations` | Upload GPS point |
-| GET | `/api/journeys/:id/locations` | List GPS points |
-| GET | `/api/journeys/:id/monitoring` | Live monitoring snapshot |
-| GET | `/api/journeys/:id/anomalies` | List anomalies |
-| POST | `/api/journeys/:id/demo/simulate-anomaly` | Demo anomaly |
-| POST | `/api/safety-checks/:id/respond` | safe / need_help |
-| POST | `/api/safety-checks/:id/cancel-countdown` | Cancel auto-SOS |
-| POST | `/api/safety-checks/:id/timeout` | Automatic SOS |
-
-Frontend: `/journey` (nav: **Journey**)
-
-### Example – register
-
-```bash
-curl -X POST http://localhost:5000/api/auth/register ^
-  -H "Content-Type: application/json" ^
-  -d "{\"name\":\"Test User\",\"email\":\"test@example.com\",\"phone\":\"9999999999\",\"password\":\"secret1\"}"
-```
-
-### Example – login
-
-```bash
-curl -X POST http://localhost:5000/api/auth/login ^
-  -H "Content-Type: application/json" ^
-  -d "{\"email\":\"test@example.com\",\"password\":\"secret1\"}"
-```
-
----
-
-## How frontend talks to Flask
-
-1. Vite app calls `VITE_API_BASE_URL` via `src/api/client.js`.
-2. On register/login, Flask returns `access_token` + `user`.
-3. Token is stored in `localStorage` and sent as `Authorization: Bearer <token>`.
-4. Protected pages use `ProtectedRoute` + `AuthContext`.
-
----
-
-## Database (created on first run)
-
-Tables: `users`, `emergency_contacts`, `journeys`, `location_logs`, `anomalies`, `safety_checks`, `sos_alerts`.
-
-SQLite file is created under `backend/instance/saferoute.db` (Flask default for relative `sqlite:///` URIs).
-
----
-
-## Positioning
-
-> SafeRoute is an AI-assisted proactive personal journey safety system that monitors a user's journey for potentially unusual patterns, verifies the user's safety before escalating an alert, and provides emergency assistance through trusted contacts and optional emergency-service integration.
+This project is currently provided as an open-source project for learning and demo use.
