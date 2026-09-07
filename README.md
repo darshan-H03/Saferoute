@@ -1,8 +1,13 @@
 # SafeRoute
 
+![GitHub repo status](https://img.shields.io/badge/status-active%20project-success)
+![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB)
+![React](https://img.shields.io/badge/React-19-61DAFB)
+![License](https://img.shields.io/badge/license-Open%20Source-blue)
+
 AI-assisted **proactive personal journey safety** system.
 
-SafeRoute monitors a journey for potentially unusual patterns, asks **"Are you safe?"** before escalating, and alerts trusted contacts only when needed.
+SafeRoute monitors a journey for potentially unusual patterns, asks **"Are you safe?"** before escalating, and alerts trusted contacts only when needed. It is designed to support safer travel decisions, emergency checks, and trusted contact escalation without replacing official emergency services.
 
 It is **not** a replacement for Google Maps, ride-hailing apps, or **112 India**, and it does **not** claim to detect crimes or assaults.
 
@@ -88,6 +93,37 @@ npm run dev
 ```
 
 App runs at: `http://localhost:5173`
+
+---
+
+## Git workflow
+
+Use a simple feature-based workflow to keep the repo clean:
+
+```bash
+git checkout -b feature/my-change
+git add .
+git commit -m "Add my feature"
+git push origin feature/my-change
+```
+
+Before merging to main:
+
+```bash
+git checkout main
+git pull origin main
+git merge feature/my-change
+git push origin main
+```
+
+For a clean reset after testing locally:
+
+```bash
+git status
+git restore .
+```
+
+> Never commit secrets, service account keys, or local environment files. Keep those in `.env` only and let `.gitignore` handle the rest.
 
 ---
 
